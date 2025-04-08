@@ -49,7 +49,8 @@ class ArrayStructure {
       return this.items;
     }
 
-    insertAt(index, value) {
+    async insertAt(index, value) {
+      await this.sleep(10);
       this.items.splice(index, 0, value);
       return this.items;
     }
