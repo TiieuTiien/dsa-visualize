@@ -1,0 +1,17 @@
+.array-container {
+  display: flex;
+  border: 1px solid black;
+  height: 300px;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 10px;
+}
+
+.bar-container {
+  margin: 0 5px;
+}
+
+.bar {
+  width: 30px;
+  background-color: steelblue;
+}
