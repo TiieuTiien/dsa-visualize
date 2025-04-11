@@ -16,59 +16,58 @@ export default class DragDrop {
   }
 
   enableDragAndDrop() {
-    // Query all elements with the .bar class within the array container
-    const bars = this.arrayContainer.querySelectorAll(".bar");
-    bars.forEach((bar, index) => {
-      // Remove any previously attached event listeners
-      bar.removeEventListener("dragstart", this.dragStart);
-      bar.removeEventListener("dragover", this.dragOver);
-      bar.removeEventListener("drop", this.drop);
+    const containers = this.arrayContainer.querySelectorAll(".bar-container");
+    containers.forEach((container, index) => {
+      container.removeEventListener("dragstart", this.dragStart);
+      container.removeEventListener("dragover", this.dragOver);
+      container.removeEventListener("drop", this.drop);
 
-      bar.setAttribute("draggable", "true");
-      bar.dataset.index = index; // Assign a data index to each bar
-      bar.addEventListener("dragstart", this.dragStart);
-      bar.addEventListener("dragover", this.dragOver);
-      bar.addEventListener("drop", this.drop);
+      container.setAttribute("draggable", "true");
+      container.dataset.index = index;
+      container.addEventListener("dragstart", this.dragStart);
+      container.addEventListener("dragover", this.dragOver);
+      container.addEventListener("drop", this.drop);
     });
   }
 
   dragStart(e) {
-    // Set the data with the dragged element's index and change its opacity
-    const index = e.target.dataset.index;
-    e.dataTransfer.setData("text/plain", e.target.dataset.index);
+    // Use e.currentTarget (the bar-container) directly
+    console.log(e);
+    
+    const container = e.target;
+    const index = container.dataset.index;
+    e.dataTransfer.setData("text/plain", index);
+    // Reset previous colors and mark this container as red
     this.setBarColors({ [index]: "red" });
   }
 
   dragOver(e) {
-    // Prevent default to allow drop
-    e.preventDefault();
+    e.preventDefault(); // Allow drop
   }
 
   drop(e) {
-    e.stopPropagation(); // Prevent duplicate event firing
-
+    e.stopPropagation();
+    // Use e.currentTarget to get the container where the drop occurred.
+    const container = e.target;
+    const targetIndex = container.dataset.index;
     const draggedIndex = e.dataTransfer.getData("text/plain");
-    const targetIndex = e.target.dataset.index;
 
     console.log(
       `Index: [${draggedIndex},${targetIndex}], ` +
         `Value: [${this.array[draggedIndex]},${this.array[targetIndex]}]`
     );
 
-    // Swap the values in the array based on the indices
+    // Swap the values
     const temp = this.array[draggedIndex];
     this.array[draggedIndex] = this.array[targetIndex];
     this.array[targetIndex] = temp;
 
-    // Pre-calculate color mapping: mark drop target as green.
-    // Also, clear the dragged index's color if desired.
     this.setBarColors((prev) => ({
       ...prev,
-      [draggedIndex]: "red", // Clear dragged color
+      [draggedIndex]: "red",
       [targetIndex]: "green",
     }));
 
-    // Re-render the array using the provided function
     this.renderArray(this.array);
   }
 }
