@@ -5,7 +5,7 @@ import "./App.css";
 
 function App() {
   // Increase the array size if needed
-  const [arrayStructure] = useState(new ArrayStructure(20));
+  const [arrayStructure] = useState(new ArrayStructure(8));
   const [array, setArray] = useState(arrayStructure.getArray());
   const [dragDropInstance, setDragDropInstance] = useState(null);
   const [barColors, setBarColors] = useState({});
@@ -16,6 +16,21 @@ function App() {
   // Function to update the array state and (optionally) handle highlighting
   const renderArray = useCallback((arr, highlightIndices = null) => {
     setArray([...arr]);
+    if (highlightIndices !== null) {
+      const newBarColors = {};
+      if (Array.isArray(highlightIndices)) {
+        // When two indices are provided: use red for the first, green for the second.
+        if (highlightIndices.length >= 2) {
+          newBarColors[highlightIndices[0]] = "red";
+          newBarColors[highlightIndices[1]] = "green";
+        } else {
+          newBarColors[highlightIndices[0]] = "orange";
+        }
+      } else {
+        newBarColors[highlightIndices] = "orange";
+      }
+      setBarColors(newBarColors);
+    }
   }, []);
 
   // Set up (or update) the DragDrop instance whenever the array or container changes.
@@ -37,45 +52,69 @@ function App() {
     }
   }, [containerRef, array, dragDropInstance, renderArray]);
 
-  const handleStartSorting = async () => {
+  const handleStartSorting = useCallback(async () => {
     await arrayStructure.bubbleSortAnimated(
       arrayStructure.getArray(),
       renderArray
     );
     renderArray(arrayStructure.getArray());
-  };
+  }, [arrayStructure, renderArray]);
 
-  const handleInsert = async () => {
+  const maxArrayLength = 20;
+
+  const handleInsert = useCallback(async () => {
+    if (array.length >= maxArrayLength) {
+      alert("Reaching max arraylength!");
+      return;
+    }; // Prevent further insertions if max reached
     const randomIndex = Math.floor(Math.random() * (array.length + 1));
     const randomValue = Math.floor(Math.random() * 100) + 1;
     const newArray = await arrayStructure.insertAt(randomIndex, randomValue);
-
     renderArray(newArray, randomIndex);
-  };
+  }, [array, arrayStructure, renderArray]);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.repeat) return;
+      if (event.key === "s" || event.key === "S") {
+        event.preventDefault();
+        handleStartSorting();
+      }
+      if (event.key === "i" || event.key === "I") {
+        event.preventDefault();
+        handleInsert();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [handleStartSorting, handleInsert]);
 
   return (
     <div id="container">
-      <h1>Array Visualization</h1>
-      <p>Click to start the sorting algorithm.</p>
-      <button onClick={handleStartSorting}>Start Sorting</button>
-      <button onClick={handleInsert}>Insert</button>
+      <div className="info">
+        <h1>Array Visualization</h1>
+        <p>Click to start the sorting algorithm.</p>
+        <div className="button-container">
+          <button onClick={handleStartSorting}>Start Sorting</button>
+          <button onClick={handleInsert}>Insert</button>
+        </div>
+      </div>
       <div id="arrayContainer" ref={containerRef} className="array-container">
-        {array.map((value, index) => (
-          <div
-            key={index}
-            className="bar-container"
-            data-index={index}
-          >
-            <div className="bar-value">{value}</div>
-            <div
-              className="bar"
-              style={{
-                height: `${value * 3}px`,
-                backgroundColor: barColors[index] || "steelblue",
-              }}
-            />
-          </div>
-        ))}
+        {array.map((value, index) => {
+          return (
+            <div key={index} className="bar-container" data-index={index}>
+              <div className="bar-value">{value}</div>
+              <div
+                className="bar"
+                style={{
+                  height: `${value * 3}px`,
+                  backgroundColor: barColors[index] || "steelblue",
+                }}
+              />
+            </div>
+          );
+        })}
       </div>
     </div>
   );

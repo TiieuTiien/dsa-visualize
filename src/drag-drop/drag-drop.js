@@ -34,6 +34,7 @@ export default class DragDrop {
     // Use e.currentTarget (the bar-container) directly
     const container = e.currentTarget;
     const index = container.dataset.index;
+    this.draggedIndex = index; // Store the index of the dragged item
     e.dataTransfer.setData("text/plain", index);
     // Reset previous colors and mark this container as red
     this.setBarColors({ [index]: "red" });
@@ -41,31 +42,32 @@ export default class DragDrop {
 
   dragOver(e) {
     e.preventDefault(); // Allow drop
+    const container = e.currentTarget; // Use currentTarget for consistency
+    const targetIndex = parseInt(container.dataset.index, 10);
+    const currentDraggedIndex = this.draggedIndex;
+  
+    if (targetIndex !== currentDraggedIndex) {
+      
+      // Create a shallow copy instead of modifying the original array directly
+      const newArray = [...this.array];
+      console.log("Before insert Array: " + newArray);
+
+      const element = newArray.splice(currentDraggedIndex, 1)[0];
+      
+      const insertionIndex = targetIndex;
+      newArray.splice(insertionIndex, 0, element);
+      console.log("After  insert Array: " + newArray);
+      
+      this.draggedIndex = insertionIndex;
+      this.setBarColors({[insertionIndex]: "green"});
+      // Update the stored array and render the new array
+      this.array = newArray;
+      this.renderArray(newArray, insertionIndex);
+    }
   }
 
   drop(e) {
     e.stopPropagation();
-    // Use e.currentTarget to get the container where the drop occurred.
-    const container = e.currentTarget;
-    const targetIndex = container.dataset.index;
-    const draggedIndex = e.dataTransfer.getData("text/plain");
-
-    console.log(
-      `Index: [${draggedIndex},${targetIndex}], ` +
-        `Value: [${this.array[draggedIndex]},${this.array[targetIndex]}]`
-    );
-
-    // Swap the values
-    const temp = this.array[draggedIndex];
-    this.array[draggedIndex] = this.array[targetIndex];
-    this.array[targetIndex] = temp;
-
-    this.setBarColors((prev) => ({
-      ...prev,
-      [draggedIndex]: "red",
-      [targetIndex]: "green",
-    }));
-
-    this.renderArray(this.array);
+    this.setBarColors({});
   }
 }

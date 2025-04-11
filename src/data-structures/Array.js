@@ -36,7 +36,7 @@ class ArrayStructure {
               onSwap(arr, [i, i + 1]);
             }    
 
-            await this.sleep(10); // pause for 400ms between swaps
+            await this.sleep(20); // pause for 400ms between swaps
           }
         }
         n--;
