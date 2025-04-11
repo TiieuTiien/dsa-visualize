@@ -6,7 +6,7 @@ import "./App.css";
 
 function App() {
   // Increase the array size if needed
-  const [arrayStructure] = useState(new ArrayStructure(8));
+  const [arrayStructure] = useState(new ArrayStructure(10));
   const [array, setArray] = useState(arrayStructure.getArray());
   const [dragDropInstance, setDragDropInstance] = useState(null);
   const [barColors, setBarColors] = useState({});
@@ -55,14 +55,16 @@ function App() {
   }, [containerRef, array, dragDropInstance, renderArray]);
 
   const showAlert = (message) => {
+    // Create a new alert with a unique id (e.g., using Date.now())
+    const newAlert = { id: Date.now(), message };
     setAlerts((prev) => {
       if (prev.length >= 3) return prev;
-      return [...prev, message];
+      return [...prev, newAlert];
     });
   };
 
-  const closeAlert = (index) => {
-    setAlerts((prev) => prev.filter((_, i) => i !== index));
+  const closeAlert = (id) => {
+    setAlerts((prev) => prev.filter((alert) => alert.id !== id));
   };
 
   const handleStartSorting = useCallback(async () => {
@@ -73,7 +75,7 @@ function App() {
     renderArray(arrayStructure.getArray());
   }, [arrayStructure, renderArray]);
 
-  const MAXARRAYLENGTH = 10;
+  const MAXARRAYLENGTH = 20;
 
   const handleInsert = useCallback(async () => {
     if (array.length >= MAXARRAYLENGTH) {
@@ -106,8 +108,12 @@ function App() {
   return (
     <div id="container">
       <div className="alert-container">
-        {alerts.map((msg, index) => (
-          <Alert key={index} message={msg} onClose={() => closeAlert(index)} />
+        {alerts.map((alert) => (
+          <Alert
+            key={alert.id}
+            message={alert.message}
+            onClose={() => closeAlert(alert.id)}
+          />
         ))}
       </div>
       <div className="info">

@@ -1,4 +1,6 @@
-.alert {
+.alert-box {
+    display: flex;
+    flex-direction: column;
     background-color: #00a2c8;
     color: white;
     padding: 15px 20px;
@@ -28,3 +30,24 @@
   .alert-close:active {
     background-color: inherit;
   }
+
+  .alert-progress {
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.8);
+    width: 100%;
+    margin-top: 10px;
+    transform-origin: right;
+    align-self: stretch;
+    animation-name: progressAnimation;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+
+@keyframes progressAnimation {
+    from {
+        width: 0%;
+    }
+    to {
+        width: 100%;
+    }
+}
