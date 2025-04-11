@@ -5,7 +5,7 @@ import "./App.css";
 
 function App() {
   // Increase the array size if needed
-  const [arrayStructure] = useState(new ArrayStructure(2));
+  const [arrayStructure] = useState(new ArrayStructure(20));
   const [array, setArray] = useState(arrayStructure.getArray());
   const [dragDropInstance, setDragDropInstance] = useState(null);
   const [barColors, setBarColors] = useState({});
@@ -15,7 +15,7 @@ function App() {
 
   // Function to update the array state and (optionally) handle highlighting
   const renderArray = (arr, highlightIndices = null) => {
-    console.log(`Rendering array: ${arr}`);
+    console.log(`Rendering array: ${array}`);
     setArray([...arr]);
   };
 
@@ -61,7 +61,11 @@ function App() {
       <button onClick={handleInsert}>Insert</button>
       <div id="arrayContainer" ref={containerRef} className="array-container">
         {array.map((value, index) => (
-          <div key={index} className="bar-container" data-index={index}>
+          <div
+            key={index}
+            className="bar-container"
+            data-index={index}
+          >
             <div
               className="bar"
               style={{
