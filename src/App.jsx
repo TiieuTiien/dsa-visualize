@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import ArrayStructure from "./data-structures/Array";
 import DragDrop from "./drag-drop/drag-drop";
 import "./App.css";
@@ -14,10 +14,9 @@ function App() {
   const containerRef = useRef(null);
 
   // Function to update the array state and (optionally) handle highlighting
-  const renderArray = (arr, highlightIndices = null) => {
-    console.log(`Rendering array: ${array}`);
+  const renderArray = useCallback((arr, highlightIndices = null) => {
     setArray([...arr]);
-  };
+  }, []);
 
   // Set up (or update) the DragDrop instance whenever the array or container changes.
   useEffect(() => {
@@ -36,7 +35,7 @@ function App() {
         dragDropInstance.enableDragAndDrop();
       }
     }
-  }, [containerRef, array, dragDropInstance]);
+  }, [containerRef, array, dragDropInstance, renderArray]);
 
   const handleStartSorting = async () => {
     await arrayStructure.bubbleSortAnimated(
@@ -50,6 +49,7 @@ function App() {
     const randomIndex = Math.floor(Math.random() * (array.length + 1));
     const randomValue = Math.floor(Math.random() * 100) + 1;
     const newArray = await arrayStructure.insertAt(randomIndex, randomValue);
+
     renderArray(newArray, randomIndex);
   };
 
@@ -66,6 +66,7 @@ function App() {
             className="bar-container"
             data-index={index}
           >
+            <div className="bar-value">{value}</div>
             <div
               className="bar"
               style={{

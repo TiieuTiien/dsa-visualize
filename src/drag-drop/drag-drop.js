@@ -32,9 +32,7 @@ export default class DragDrop {
 
   dragStart(e) {
     // Use e.currentTarget (the bar-container) directly
-    console.log(e);
-    
-    const container = e.target;
+    const container = e.currentTarget;
     const index = container.dataset.index;
     e.dataTransfer.setData("text/plain", index);
     // Reset previous colors and mark this container as red
@@ -48,7 +46,7 @@ export default class DragDrop {
   drop(e) {
     e.stopPropagation();
     // Use e.currentTarget to get the container where the drop occurred.
-    const container = e.target;
+    const container = e.currentTarget;
     const targetIndex = container.dataset.index;
     const draggedIndex = e.dataTransfer.getData("text/plain");
 
