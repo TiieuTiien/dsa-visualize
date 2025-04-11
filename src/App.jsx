@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import ArrayStructure from "./data-structures/Array";
 import DragDrop from "./drag-drop/drag-drop";
+import Alert from "./alert/Alert";
 import "./App.css";
 
 function App() {
@@ -9,6 +10,7 @@ function App() {
   const [array, setArray] = useState(arrayStructure.getArray());
   const [dragDropInstance, setDragDropInstance] = useState(null);
   const [barColors, setBarColors] = useState({});
+  const [alerts, setAlerts] = useState([]);
 
   // Use a React ref for the array container
   const containerRef = useRef(null);
@@ -52,6 +54,17 @@ function App() {
     }
   }, [containerRef, array, dragDropInstance, renderArray]);
 
+  const showAlert = (message) => {
+    setAlerts((prev) => {
+      if (prev.length >= 3) return prev;
+      return [...prev, message];
+    });
+  };
+
+  const closeAlert = (index) => {
+    setAlerts((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleStartSorting = useCallback(async () => {
     await arrayStructure.bubbleSortAnimated(
       arrayStructure.getArray(),
@@ -60,13 +73,13 @@ function App() {
     renderArray(arrayStructure.getArray());
   }, [arrayStructure, renderArray]);
 
-  const maxArrayLength = 20;
+  const MAXARRAYLENGTH = 10;
 
   const handleInsert = useCallback(async () => {
-    if (array.length >= maxArrayLength) {
-      alert("Reaching max arraylength!");
+    if (array.length >= MAXARRAYLENGTH) {
+      showAlert("Reaching max arraylength!");
       return;
-    }; // Prevent further insertions if max reached
+    } // Prevent further insertions if max reached
     const randomIndex = Math.floor(Math.random() * (array.length + 1));
     const randomValue = Math.floor(Math.random() * 100) + 1;
     const newArray = await arrayStructure.insertAt(randomIndex, randomValue);
@@ -92,6 +105,11 @@ function App() {
 
   return (
     <div id="container">
+      <div className="alert-container">
+        {alerts.map((msg, index) => (
+          <Alert key={index} message={msg} onClose={() => closeAlert(index)} />
+        ))}
+      </div>
       <div className="info">
         <h1>Array Visualization</h1>
         <p>Click to start the sorting algorithm.</p>
