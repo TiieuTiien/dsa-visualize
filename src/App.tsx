@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import ArrayStructure from "./data-structures/Array";
 import DragDrop from "./drag-drop/drag-drop";
-import Alert from "./alert/Alert";
+import Alert from "./Components/Alert/Alert.tsx";
 import "./App.css";
 
 function App() {
@@ -16,24 +16,27 @@ function App() {
   const containerRef = useRef(null);
 
   // Function to update the array state and (optionally) handle highlighting
-  const renderArray = useCallback((arr, highlightIndices = null) => {
-    setArray([...arr]);
-    if (highlightIndices !== null) {
-      const newBarColors = {};
-      if (Array.isArray(highlightIndices)) {
-        // When two indices are provided: use red for the first, green for the second.
-        if (highlightIndices.length >= 2) {
-          newBarColors[highlightIndices[0]] = "red";
-          newBarColors[highlightIndices[1]] = "green";
+  const renderArray = useCallback(
+    (arr: number[], highlightIndices: number | number[] | null = null) => {
+      setArray([...arr]);
+      if (highlightIndices !== null) {
+        const newBarColors: Record<number, string> = {};
+        if (Array.isArray(highlightIndices)) {
+          // When two indices are provided: use red for the first, green for the second.
+          if (highlightIndices.length >= 2) {
+            newBarColors[highlightIndices[0]] = "red";
+            newBarColors[highlightIndices[1]] = "green";
+          } else {
+            newBarColors[highlightIndices[0]] = "orange";
+          }
         } else {
-          newBarColors[highlightIndices[0]] = "orange";
+          newBarColors[highlightIndices] = "orange";
         }
-      } else {
-        newBarColors[highlightIndices] = "orange";
+        setBarColors(newBarColors);
       }
-      setBarColors(newBarColors);
-    }
-  }, []);
+    },
+    []
+  );
 
   // Set up (or update) the DragDrop instance whenever the array or container changes.
   useEffect(() => {

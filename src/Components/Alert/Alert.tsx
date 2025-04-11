@@ -1,7 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import "./Alert.css";
 
-function Alert({ message, duration = 3000, onClose }) {
+interface AlertProps {
+  message: string;
+  duration?: number;
+  onClose: () => void;
+}
+
+const Alert: React.FC<AlertProps> = ({ message, duration = 5000, onClose }) => {
   // Store onClose in a ref so that it doesn’t change across renders
   const onCloseRef = useRef(onClose);
   useEffect(() => {
