@@ -93,6 +93,7 @@ function App() {
     const randomValue = Math.floor(Math.random() * 100) + 1;
     const newArray = await arrayStructure.insertAt(randomIndex, randomValue);
     renderArray(newArray, randomIndex);
+    setSelectedIndex(randomIndex);
   }, [array, arrayStructure, renderArray]);
 
   const handleRemoveSelected = useCallback(async () => {
