@@ -4,19 +4,17 @@ import DragDrop from "./drag-drop/drag-drop";
 import AlertList from "./Components/AlertList/AlertList.tsx";
 import ArrayList from "./Components/ArrayList/ArrayList.tsx";
 import "./App.css";
+import useKeyboardEvents from "./Hooks/useKeyboardEvents.tsx";
 
 function App() {
-  // Increase the array size if needed
   const [arrayStructure] = useState(new ArrayStructure(10));
   const [array, setArray] = useState(arrayStructure.getArray());
   const [dragDropInstance, setDragDropInstance] = useState(null);
   const [barColors, setBarColors] = useState({});
   const [alerts, setAlerts] = useState([]);
 
-  // Use a React ref for the array container
   const containerRef = useRef(null);
 
-  // Function to update the array state and (optionally) handle highlighting
   const renderArray = useCallback(
     (arr: number[], highlightIndices: number | number[] | null = null) => {
       setArray([...arr]);
@@ -59,7 +57,6 @@ function App() {
   }, [containerRef, array, dragDropInstance, renderArray]);
 
   const showAlert = (message) => {
-    // Create a new alert with a unique id (e.g., using Date.now())
     const newAlert = { id: Date.now(), message };
     setAlerts((prev) => {
       if (prev.length >= 3) return prev;
@@ -85,29 +82,17 @@ function App() {
     if (array.length >= MAXARRAYLENGTH) {
       showAlert("Reaching max arraylength!");
       return;
-    } // Prevent further insertions if max reached
+    }
     const randomIndex = Math.floor(Math.random() * (array.length + 1));
     const randomValue = Math.floor(Math.random() * 100) + 1;
     const newArray = await arrayStructure.insertAt(randomIndex, randomValue);
     renderArray(newArray, randomIndex);
   }, [array, arrayStructure, renderArray]);
 
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.repeat) return;
-      if (event.key === "s" || event.key === "S") {
-        event.preventDefault();
-        handleStartSorting();
-      }
-      if (event.key === "i" || event.key === "I") {
-        event.preventDefault();
-        handleInsert();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [handleStartSorting, handleInsert]);
+  useKeyboardEvents({
+    s: () => handleStartSorting(),
+    i: () => handleInsert(),
+  });
 
   return (
     <div id="container">
