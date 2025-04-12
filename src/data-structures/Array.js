@@ -43,6 +43,15 @@ class ArrayStructure {
       } while (swapped);
       return arr;
     }
+
+    async randomizeArray() {
+      for (let i = this.items.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [this.items[i], this.items[j]] = [this.items[j], this.items[i]];
+        await this.sleep(10); // slight delay for visualization
+      }
+      return this.items;
+    }
   
     // Get the array for visualization
     getArray() {

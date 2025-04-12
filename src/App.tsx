@@ -115,10 +115,16 @@ function App() {
     }
   }, [selectedIndex, array, arrayStructure, renderArray]);
 
+  const handleRandomize = useCallback(async () => {
+    const newArray = await arrayStructure.randomizeArray();
+    renderArray(newArray);
+  }, [arrayStructure, renderArray]);
+
   useKeyboardEvents({
     s: () => handleStartSorting(),
     i: () => handleInsert(),
-    r: () => handleRemoveSelected(),
+    d: () => handleRemoveSelected(),
+    r: () => handleRandomize(),
   });
 
   return (
@@ -129,7 +135,8 @@ function App() {
         <div className="button-container">
           <button onClick={handleStartSorting}>Start Sorting</button>
           <button onClick={handleInsert}>Insert</button>
-          <button onClick={handleRemoveSelected}>Delete</button>
+          <button onClick={handleRemoveSelected}>Remove</button>
+          <button onClick={handleRandomize}>Randomize</button>
         </div>
       </div>
       <AlertList alerts={alerts} closeAlert={closeAlert} />
