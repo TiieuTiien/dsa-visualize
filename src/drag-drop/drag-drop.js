@@ -5,6 +5,7 @@ export default class DragDrop {
     this.array = array;
     this.renderArray = renderArray;
     this.setBarColors = setBarColors;
+    this.onDrop = null;
 
     // Bind instance methods so that 'this' is maintained inside the handlers
     this.dragStart = this.dragStart.bind(this);
@@ -47,16 +48,12 @@ export default class DragDrop {
     const currentDraggedIndex = this.draggedIndex;
   
     if (targetIndex !== currentDraggedIndex) {
-      
-      // Create a shallow copy instead of modifying the original array directly
       const newArray = [...this.array];
-      console.log("Before insert Array: " + newArray);
 
       const element = newArray.splice(currentDraggedIndex, 1)[0];
       
       const insertionIndex = targetIndex;
       newArray.splice(insertionIndex, 0, element);
-      console.log("After  insert Array: " + newArray);
       
       this.draggedIndex = insertionIndex;
       this.setBarColors({[insertionIndex]: "green"});
@@ -68,6 +65,11 @@ export default class DragDrop {
 
   drop(e) {
     e.stopPropagation();
+
+    if (this.onDrop && typeof this.onDrop === "function") {
+      this.onDrop(parseInt(this.draggedIndex, 10));
+    }
+
     this.setBarColors({});
   }
 }

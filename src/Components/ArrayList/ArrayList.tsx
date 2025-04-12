@@ -4,18 +4,31 @@ interface ArrayListProps {
   array: number[];
   barColors: { [key: number]: string };
   containerRef: React.RefObject<HTMLDivElement>;
+  onBarSelect: (index: number) => void;
+  selectedIndex: number | null;
 }
 
 const ArrayList: React.FC<ArrayListProps> = ({
   array,
   barColors,
   containerRef,
+  onBarSelect,
+  selectedIndex,
 }) => {
   return (
     <div className="array-list" id="arraylist" ref={containerRef}>
       {array.map((value, index) => (
-        <div key={index} className="bar-container" data-index={index}>
-          <div className="bar-value">{value}</div>
+        <div
+          key={index}
+          className={`bar-container ${
+            selectedIndex === index ? "selected" : ""
+          }`}
+          data-index={index}
+          onClick={() => onBarSelect(index)}
+        >
+          <div className={`bar-value ${
+            selectedIndex === index ? "selected" : ""
+          }`}>{value}</div>
           <div
             className="bar"
             style={{

@@ -12,6 +12,7 @@ function App() {
   const [dragDropInstance, setDragDropInstance] = useState(null);
   const [barColors, setBarColors] = useState({});
   const [alerts, setAlerts] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const containerRef = useRef(null);
 
@@ -47,6 +48,11 @@ function App() {
           renderArray,
           setBarColors
         );
+
+        instance.onDrop = (droppedIndex: number) => {
+          setSelectedIndex(droppedIndex);
+        };
+
         setDragDropInstance(instance);
       } else {
         // Update the array and re-enable drag and drop on new elements.
@@ -56,8 +62,8 @@ function App() {
     }
   }, [containerRef, array, dragDropInstance, renderArray]);
 
-  const showAlert = (message) => {
-    const newAlert = { id: Date.now(), message };
+  const showAlert = (message, backgroundColor = "steelblue") => {
+    const newAlert = { id: Date.now(), message, backgroundColor };
     setAlerts((prev) => {
       if (prev.length >= 3) return prev;
       return [...prev, newAlert];
@@ -80,7 +86,7 @@ function App() {
 
   const handleInsert = useCallback(async () => {
     if (array.length >= MAXARRAYLENGTH) {
-      showAlert("Reaching max arraylength!");
+      showAlert("Reaching max arraylength!", "orange");
       return;
     }
     const randomIndex = Math.floor(Math.random() * (array.length + 1));
@@ -89,9 +95,29 @@ function App() {
     renderArray(newArray, randomIndex);
   }, [array, arrayStructure, renderArray]);
 
+  const handleRemoveSelected = useCallback(async () => {
+    if (selectedIndex === null) {
+      showAlert("No element selected!", "#DD0000");
+      return;
+    }
+    if (array.length === 0) {
+      showAlert("Array is empty!");
+      return;
+    }
+    try {
+      const newArray = await arrayStructure.removeAt(selectedIndex);
+      renderArray(newArray);
+      setSelectedIndex(null);
+      setBarColors({});
+    } catch (error: any) {
+      showAlert(error.message);
+    }
+  }, [selectedIndex, array, arrayStructure, renderArray]);
+
   useKeyboardEvents({
     s: () => handleStartSorting(),
     i: () => handleInsert(),
+    r: () => handleRemoveSelected(),
   });
 
   return (
@@ -102,6 +128,7 @@ function App() {
         <div className="button-container">
           <button onClick={handleStartSorting}>Start Sorting</button>
           <button onClick={handleInsert}>Insert</button>
+          <button onClick={handleRemoveSelected}>Delete</button>
         </div>
       </div>
       <AlertList alerts={alerts} closeAlert={closeAlert} />
@@ -109,6 +136,8 @@ function App() {
         array={array}
         barColors={barColors}
         containerRef={containerRef}
+        onBarSelect={(index) => setSelectedIndex(index)}
+        selectedIndex={selectedIndex}
       />
     </div>
   );

@@ -19,6 +19,7 @@ const AlertList: React.FC<AlertListProps> = ({alerts, closeAlert}) => {
                 key={alert.id}
                 message={alert.message}
                 onClose={() => closeAlert(alert.id)}
+                backgroundColor={alert.backgroundColor}
             />
         ))}
     </div>

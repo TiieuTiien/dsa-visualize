@@ -5,9 +5,10 @@ interface AlertProps {
   message: string;
   duration?: number;
   onClose: () => void;
+  backgroundColor?: string;
 }
 
-const Alert: React.FC<AlertProps> = ({ message, duration = 5000, onClose }) => {
+const Alert: React.FC<AlertProps> = ({ message, duration = 5000, onClose, backgroundColor}) => {
   // Store onClose in a ref so that it doesn’t change across renders
   const onCloseRef = useRef(onClose);
   useEffect(() => {
@@ -22,7 +23,7 @@ const Alert: React.FC<AlertProps> = ({ message, duration = 5000, onClose }) => {
   }, [duration]);
 
   return (
-    <div className="alert-box">
+    <div className="alert-box" style={{ backgroundColor: backgroundColor || undefined}}>
       <div className="alert">
         {message}
         <button className="alert-close" onClick={onClose}>
@@ -35,6 +36,6 @@ const Alert: React.FC<AlertProps> = ({ message, duration = 5000, onClose }) => {
       />
     </div>
   );
-}
+};
 
 export default Alert;

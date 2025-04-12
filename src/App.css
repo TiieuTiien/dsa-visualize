@@ -29,12 +29,17 @@
 }
   
 .bar-container {
-  margin: 0 5px;
+  padding: 5px;
   height: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-radius: 6px;
   justify-content: flex-end;
+}
+
+.bar-container.selected {
+  background-color: rgb(201, 232, 255);
 }
 
 .bar {

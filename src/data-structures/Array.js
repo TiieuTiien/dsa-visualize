@@ -54,8 +54,15 @@ class ArrayStructure {
       this.items.splice(index, 0, value);
       return this.items;
     }
-  
-    // Optionally: You could add other methods like insert, delete, etc.
+    
+    async removeAt(index) {
+      await this.sleep(10);
+      if (index < 0 || index >= this.items.length) {
+        throw new Error("Index out of bounds");
+      }
+      this.items.splice(index, 1);
+      return this.items;
+    }
 }
   
 export default ArrayStructure;
