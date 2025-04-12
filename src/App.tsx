@@ -3,8 +3,10 @@ import ArrayStructure from "./data-structures/Array";
 import DragDrop from "./drag-drop/drag-drop";
 import AlertList from "./Components/AlertList/AlertList.tsx";
 import ArrayList from "./Components/ArrayList/ArrayList.tsx";
+import Header from "./Components/Header/Header.tsx";
 import "./App.css";
 import useKeyboardEvents from "./Hooks/useKeyboardEvents.tsx";
+import Footer from "./Components/Footer/Footer.tsx";
 
 function App() {
   const [arrayStructure] = useState(new ArrayStructure(10));
@@ -98,8 +100,7 @@ function App() {
 
   const handleRemoveSelected = useCallback(async () => {
     if (selectedIndex === null) {
-      showAlert("No element selected!", "#DD0000");
-      return;
+      setSelectedIndex(0);
     }
     if (array.length === 0) {
       showAlert("Array is empty!");
@@ -129,24 +130,49 @@ function App() {
 
   return (
     <div id="container">
-      <div className="info">
-        <h1>Array Visualization</h1>
-        <p>Click to start the sorting algorithm.</p>
-        <div className="button-container">
-          <button onClick={handleStartSorting}>Start Sorting</button>
-          <button onClick={handleInsert}>Insert</button>
-          <button onClick={handleRemoveSelected}>Remove</button>
-          <button onClick={handleRandomize}>Randomize</button>
+      <Header />
+      <div className="main-content">
+        <div className="info">
+          <h1>Array Visualization</h1>
+          <p>Click to start the sorting algorithm.</p>
+          <div className="button-container">
+            <button onClick={handleStartSorting}>Start Sorting</button>
+            <button onClick={handleInsert}>Insert</button>
+            <button onClick={handleRemoveSelected}>Remove</button>
+            <button onClick={handleRandomize}>Randomize</button>
+          </div>
         </div>
+        <AlertList alerts={alerts} closeAlert={closeAlert} />
+        <ArrayList
+          array={array}
+          barColors={barColors}
+          containerRef={containerRef}
+          onBarSelect={(index) => setSelectedIndex(index)}
+          selectedIndex={selectedIndex}
+        />
+        <ArrayList
+          array={array}
+          barColors={barColors}
+          containerRef={containerRef}
+          onBarSelect={(index) => setSelectedIndex(index)}
+          selectedIndex={selectedIndex}
+        />
+        <ArrayList
+          array={array}
+          barColors={barColors}
+          containerRef={containerRef}
+          onBarSelect={(index) => setSelectedIndex(index)}
+          selectedIndex={selectedIndex}
+        />
+        <ArrayList
+          array={array}
+          barColors={barColors}
+          containerRef={containerRef}
+          onBarSelect={(index) => setSelectedIndex(index)}
+          selectedIndex={selectedIndex}
+        />
       </div>
-      <AlertList alerts={alerts} closeAlert={closeAlert} />
-      <ArrayList
-        array={array}
-        barColors={barColors}
-        containerRef={containerRef}
-        onBarSelect={(index) => setSelectedIndex(index)}
-        selectedIndex={selectedIndex}
-      />
+      <Footer />
     </div>
   );
 }
