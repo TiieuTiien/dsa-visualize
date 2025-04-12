@@ -6,7 +6,7 @@
   width: 100%;
 }
 
-.alert-container {
+.alert-list {
   position: fixed;
   top: 20px;
   right: 20px;
@@ -16,7 +16,7 @@
   z-index: 1100;
 }
 
-.array-container {
+.array-list {
   display: flex;
   border-radius: 6px;
   height: 300px;
@@ -27,7 +27,7 @@
   margin: 20px 200px;
   padding: 20px;
 }
-
+  
 .bar-container {
   margin: 0 5px;
   height: 300px;

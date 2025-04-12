@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import ArrayStructure from "./data-structures/Array";
 import DragDrop from "./drag-drop/drag-drop";
-import Alert from "./Components/Alert/Alert.tsx";
+import AlertList from "./Components/AlertList/AlertList.tsx";
+import ArrayList from "./Components/ArrayList/ArrayList.tsx";
 import "./App.css";
 
 function App() {
@@ -110,15 +111,6 @@ function App() {
 
   return (
     <div id="container">
-      <div className="alert-container">
-        {alerts.map((alert) => (
-          <Alert
-            key={alert.id}
-            message={alert.message}
-            onClose={() => closeAlert(alert.id)}
-          />
-        ))}
-      </div>
       <div className="info">
         <h1>Array Visualization</h1>
         <p>Click to start the sorting algorithm.</p>
@@ -127,22 +119,12 @@ function App() {
           <button onClick={handleInsert}>Insert</button>
         </div>
       </div>
-      <div id="arrayContainer" ref={containerRef} className="array-container">
-        {array.map((value, index) => {
-          return (
-            <div key={index} className="bar-container" data-index={index}>
-              <div className="bar-value">{value}</div>
-              <div
-                className="bar"
-                style={{
-                  height: `${value * 3}px`,
-                  backgroundColor: barColors[index] || "steelblue",
-                }}
-              />
-            </div>
-          );
-        })}
-      </div>
+      <AlertList alerts={alerts} closeAlert={closeAlert} />
+      <ArrayList
+        array={array}
+        barColors={barColors}
+        containerRef={containerRef}
+      />
     </div>
   );
 }
