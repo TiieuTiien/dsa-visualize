@@ -7,9 +7,13 @@ import Header from "./Components/Header/Header.tsx";
 import "./App.css";
 import useKeyboardEvents from "./Hooks/useKeyboardEvents.tsx";
 import Footer from "./Components/Footer/Footer.tsx";
+import SortingSelector from "./Components/SortingSelector/SortingSelector.tsx";
 
 function App() {
-  const [arrayStructure] = useState(new ArrayStructure(10));
+  const ARRAYLENGTH = 20;
+  const MAXARRAYLENGTH = 30;
+
+  const [arrayStructure] = useState(new ArrayStructure(ARRAYLENGTH));
   const [array, setArray] = useState(arrayStructure.getArray());
   const [dragDropInstance, setDragDropInstance] = useState(null);
   const [barColors, setBarColors] = useState({});
@@ -77,14 +81,12 @@ function App() {
   };
 
   const handleStartSorting = useCallback(async () => {
-    await arrayStructure.bubbleSortAnimated(
+    await arrayStructure.insertionSortAnimated(
       arrayStructure.getArray(),
       renderArray
     );
     renderArray(arrayStructure.getArray());
   }, [arrayStructure, renderArray]);
-
-  const MAXARRAYLENGTH = 20;
 
   const handleInsert = useCallback(async () => {
     if (array.length >= MAXARRAYLENGTH) {
@@ -97,6 +99,22 @@ function App() {
     renderArray(newArray, randomIndex);
     setSelectedIndex(randomIndex);
   }, [array, arrayStructure, renderArray]);
+
+  const handleDoubleClick = useCallback(async (index: number) => {
+    const newValue = prompt("Enter a new value:");
+    if (newValue === null) {
+      showAlert("Value is null");
+      return;
+    } else if (isNaN(parseInt(newValue, 10))) {
+      showAlert("Please input a valid number", "red");
+      return;
+    }
+    else if (parseInt(newValue, 10) >= 0 && parseInt(newValue, 10) <= 100) {
+      const newArray = await arrayStructure.updateAt(index, parseInt(newValue, 10));
+      setSelectedIndex(index);
+      renderArray(newArray, index);
+    }
+  }, [renderArray, arrayStructure]);
 
   const handleRemoveSelected = useCallback(async () => {
     if (selectedIndex === null) {
@@ -136,10 +154,14 @@ function App() {
           <h1>Array Visualization</h1>
           <p>Click to start the sorting algorithm.</p>
           <div className="button-container">
-            <button onClick={handleStartSorting}>Start Sorting</button>
-            <button onClick={handleInsert}>Insert</button>
-            <button onClick={handleRemoveSelected}>Remove</button>
+            <SortingSelector
+              arrayStructure={arrayStructure}
+              renderArray={renderArray}
+              showAlert={showAlert}
+            />
             <button onClick={handleRandomize}>Randomize</button>
+            <button onClick={handleInsert}>Insert</button>
+            <button onClick={handleRemoveSelected}>Delete</button>
           </div>
         </div>
         <AlertList alerts={alerts} closeAlert={closeAlert} />
@@ -148,27 +170,7 @@ function App() {
           barColors={barColors}
           containerRef={containerRef}
           onBarSelect={(index) => setSelectedIndex(index)}
-          selectedIndex={selectedIndex}
-        />
-        <ArrayList
-          array={array}
-          barColors={barColors}
-          containerRef={containerRef}
-          onBarSelect={(index) => setSelectedIndex(index)}
-          selectedIndex={selectedIndex}
-        />
-        <ArrayList
-          array={array}
-          barColors={barColors}
-          containerRef={containerRef}
-          onBarSelect={(index) => setSelectedIndex(index)}
-          selectedIndex={selectedIndex}
-        />
-        <ArrayList
-          array={array}
-          barColors={barColors}
-          containerRef={containerRef}
-          onBarSelect={(index) => setSelectedIndex(index)}
+          onDoubleClick={handleDoubleClick}
           selectedIndex={selectedIndex}
         />
       </div>

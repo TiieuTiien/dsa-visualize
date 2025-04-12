@@ -13,6 +13,7 @@ const ArrayList: React.FC<ArrayListProps> = ({
   barColors,
   containerRef,
   onBarSelect,
+  onDoubleClick,
   selectedIndex,
 }) => {
   return (
@@ -25,6 +26,7 @@ const ArrayList: React.FC<ArrayListProps> = ({
           }`}
           data-index={index}
           onClick={() => onBarSelect(index)}
+          onDoubleClick={() => onDoubleClick(index)}
         >
           <div className={`bar-value ${
             selectedIndex === index ? "selected" : ""

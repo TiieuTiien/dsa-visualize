@@ -1,0 +1,55 @@
+.custom-select-wrapper {
+  position: relative;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.selected-option {
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.custom-select-wrapper:focus-within,
+.custom-select-wrapper.active {
+  border-color: #00a2c8;
+  box-shadow: 0 0 5px rgba(0, 162, 200, 0.5);
+}
+
+.select-arrow {
+  width: 12px;
+  height: 12px;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%22292%22%20height%3D%22292%22%20viewBox%3D%220%200%20292%20292%22%20xmlns%3D%22http://www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M287.04%2069.13c-2.87-2.87-6.45-4.3-10.73-4.3H16.69c-4.28%200-7.86%201.43-10.73%204.3C2.44%2072%200%2075.65%200%2080.07c0%204.43%202.44%208.09%205.96%2011.57l135.07%20135.07c3.24%203.24%207.2%204.86%2011.15%204.86h.11c3.95%200%207.9-1.62%2011.15-4.86L286%2091.64c3.52-3.48%205.96-7.14%205.96-11.57%200-4.42-2.44-8.08-5.96-10.51z%22%20fill%3D%22%23333%22/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px;
+}
+
+.options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 100%;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  background-color: white;
+}
+
+.option {
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.option:hover {
+  background-color: #f0f4f8;
+}
