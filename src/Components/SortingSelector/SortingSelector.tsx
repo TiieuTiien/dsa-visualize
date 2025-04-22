@@ -8,7 +8,7 @@ interface SortingSelectorProps {
     arr: number[],
     highlightIndices?: number | number[] | null
   ) => void;
-  showAlert: (message: string, backgroundColor?: string) => void;
+  showNotification: (type: 'info' | 'success' | 'warning' | 'error', message: string) => void;
 }
 
 const options = [
@@ -21,7 +21,7 @@ const options = [
 const SortingSelector: React.FC<SortingSelectorProps> = ({
   arrayStructure,
   renderArray,
-  showAlert,
+  showNotification,
 }) => {
   const [selectedAlgo, setSelectedAlgo] = useState("insertion");
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -75,12 +75,12 @@ const SortingSelector: React.FC<SortingSelectorProps> = ({
           );
           break;
         default:
-          showAlert("Invalid sorting algorithm selected", "orange");
+          showNotification("warning", "Invalid sorting algorithm selected");
           return;
       }
       renderArray(arrayStructure.getArray());
     } catch (error: any) {
-      showAlert(error.message, "red");
+      showNotification("warning", error.message);
     }
   };
 

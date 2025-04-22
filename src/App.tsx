@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import ArrayStructure from "./data-structures/Array";
 import DragDrop from "./drag-drop/drag-drop";
-import AlertList from "./Components/AlertList/AlertList.tsx";
 import ArrayList from "./Components/ArrayList/ArrayList.tsx";
 import Header from "./Components/Header/Header.tsx";
-import "./App.css";
 import useKeyboardEvents from "./Hooks/useKeyboardEvents.tsx";
 import Footer from "./Components/Footer/Footer.tsx";
 import SortingSelector from "./Components/SortingSelector/SortingSelector.tsx";
+import "./App.css";
+import NotificationList, { NotificationListRef } from "./Components/NotificationList/NotificationList.tsx";
 
 function App() {
   const ARRAYLENGTH = 20;
@@ -15,12 +15,11 @@ function App() {
 
   const [arrayStructure] = useState(new ArrayStructure(ARRAYLENGTH));
   const [array, setArray] = useState(arrayStructure.getArray());
-  const [dragDropInstance, setDragDropInstance] = useState(null);
+  const [dragDropInstance, setDragDropInstance] = useState<DragDrop | null>(null);
   const [barColors, setBarColors] = useState({});
-  const [alerts, setAlerts] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const notificationListRef = useRef<NotificationListRef>(null); 
 
   const renderArray = useCallback(
     (arr: number[], highlightIndices: number | number[] | null = null) => {
@@ -68,16 +67,8 @@ function App() {
     }
   }, [containerRef, array, dragDropInstance, renderArray]);
 
-  const showAlert = (message, backgroundColor = "steelblue") => {
-    const newAlert = { id: Date.now(), message, backgroundColor };
-    setAlerts((prev) => {
-      if (prev.length >= 3) return prev;
-      return [...prev, newAlert];
-    });
-  };
-
-  const closeAlert = (id) => {
-    setAlerts((prev) => prev.filter((alert) => alert.id !== id));
+  const handleShowNotification = (type: 'info' | 'success' | 'warning' | 'error', message: string, duration: number = 2000) => {
+    notificationListRef.current?.addNotification(message, type, duration);
   };
 
   const handleStartSorting = useCallback(async () => {
@@ -90,7 +81,9 @@ function App() {
 
   const handleInsert = useCallback(async () => {
     if (array.length >= MAXARRAYLENGTH) {
-      showAlert("Reaching max arraylength!", "orange");
+      handleShowNotification("info", "Reaching max arraylength!");
+      console.log("Reaching max arraylength!");
+      
       return;
     }
     const randomIndex = Math.floor(Math.random() * (array.length + 1));
@@ -103,10 +96,10 @@ function App() {
   const handleDoubleClick = useCallback(async (index: number) => {
     const newValue = prompt("Enter a new value:");
     if (newValue === null) {
-      showAlert("Value is null");
+      handleShowNotification("warning", "Value is null");
       return;
     } else if (isNaN(parseInt(newValue, 10))) {
-      showAlert("Please input a valid number", "red");
+      handleShowNotification("warning", "Please input a valid number");
       return;
     }
     else if (parseInt(newValue, 10) >= 0 && parseInt(newValue, 10) <= 100) {
@@ -121,7 +114,7 @@ function App() {
       setSelectedIndex(0);
     }
     if (array.length === 0) {
-      showAlert("Array is empty!");
+      handleShowNotification("info", "Array is empty!");
       return;
     }
     try {
@@ -130,7 +123,7 @@ function App() {
       setSelectedIndex(null);
       setBarColors({});
     } catch (error: any) {
-      showAlert(error.message);
+      handleShowNotification("warning", error.message);
     }
   }, [selectedIndex, array, arrayStructure, renderArray]);
 
@@ -157,18 +150,18 @@ function App() {
             <SortingSelector
               arrayStructure={arrayStructure}
               renderArray={renderArray}
-              showAlert={showAlert}
+              showNotification={handleShowNotification}
             />
             <button onClick={handleRandomize}>Randomize</button>
             <button onClick={handleInsert}>Insert</button>
             <button onClick={handleRemoveSelected}>Delete</button>
           </div>
         </div>
-        <AlertList alerts={alerts} closeAlert={closeAlert} />
+        <NotificationList ref={notificationListRef} />
         <ArrayList
           array={array}
           barColors={barColors}
-          containerRef={containerRef}
+          containerRef={containerRef as React.RefObject<HTMLDivElement>}
           onBarSelect={(index) => setSelectedIndex(index)}
           onDoubleClick={handleDoubleClick}
           selectedIndex={selectedIndex}

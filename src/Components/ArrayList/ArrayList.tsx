@@ -5,6 +5,7 @@ interface ArrayListProps {
   barColors: { [key: number]: string };
   containerRef: React.RefObject<HTMLDivElement>;
   onBarSelect: (index: number) => void;
+  onDoubleClick: (index: number) => void;
   selectedIndex: number | null;
 }
 
